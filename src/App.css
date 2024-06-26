@@ -364,10 +364,6 @@ html {
 
 /* FAQ section */
 
-#faq {
-  margin-bottom: 100px;
-}
-
 .accordion-button{
   margin-bottom: 16px;
   border-style: solid;
@@ -398,6 +394,7 @@ html {
 /* Footer section */
 
 #footer {
+  margin-top: 150px;
   padding-bottom: 100px;
 }
 

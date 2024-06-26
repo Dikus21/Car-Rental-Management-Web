@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
-import CarCard from "./CarCard";
-import Notification from "./Notification";
+import React, { FC, useEffect, useState } from "react";
+import Notification from "../../../elements/Notification/Notification";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import CarCard from "./CarCard";
+import { CarProps } from "./carTypes";
 
-export default function CarLists({ setRefresh, isRefresh }) {
-  const [cars, setCars] = useState([]);
+interface CarListsProps {
+  setRefresh: (value: boolean) => void;
+  isRefresh: boolean;
+}
+
+const CarLists: FC<CarListsProps> = ({ setRefresh, isRefresh }) => {
+  const [cars, setCars] = useState<CarProps[]>([]);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationColor, setNotificationColor] = useState("");
 
@@ -60,9 +66,8 @@ export default function CarLists({ setRefresh, isRefresh }) {
         <b>Cars</b>
         <i
           data-feather="chevron-right"
-          width="20"
-          height="20"
           className="mt-1"
+          style={{ width: "20px", height: "20px" }}
         />
         List Car
       </p>
@@ -89,7 +94,10 @@ export default function CarLists({ setRefresh, isRefresh }) {
           Large
         </button>
       </div>
-      <div id="cars-card-container" className="container-fluid d-flex flex-wrap">
+      <div
+        id="cars-card-container"
+        className="container-fluid d-flex flex-wrap"
+      >
         {cars.map((car) => (
           <CarCard
             car={car}
@@ -102,4 +110,6 @@ export default function CarLists({ setRefresh, isRefresh }) {
       </div>
     </div>
   );
-}
+};
+
+export default CarLists;

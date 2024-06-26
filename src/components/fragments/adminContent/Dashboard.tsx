@@ -1,14 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import feather from "feather-icons";
-import {format} from 'date-fns'
+import { format } from "date-fns";
+import { CarProps } from "./carListCard/carTypes";
 
-export default function Dashboard({isRefresh, setRefresh}) {
-    const [cars, setCars] = useState([])
+interface DashboardProps {
+  isRefresh: boolean;
+  setRefresh: (status: boolean) => void;
+}
+
+const Dashboard: FC<DashboardProps> = ({ isRefresh, setRefresh }) => {
+  const [cars, setCars] = useState<[]>([]);
   useEffect(() => {
     feather.replace();
   });
 
-  function formatDate(date) {
+  function formatDate(date: Date) {
     return format(date, "d MMM yyyy, HH:mm");
   }
 
@@ -37,9 +43,8 @@ export default function Dashboard({isRefresh, setRefresh}) {
         <b>Dashboard</b>
         <i
           data-feather="chevron-right"
-          width="20"
-          height="20"
           className="mt-1"
+          style={{ width: "20px", height: "20px" }}
         />
         <span>Dashboard</span>
       </p>
@@ -65,21 +70,23 @@ export default function Dashboard({isRefresh, setRefresh}) {
             </tr>
           </thead>
           <tbody>
-            {cars.map((car,index) => (
-                <tr key={index}>
+            {cars.map((car: CarProps, index) => (
+              <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{car.model}</td>
                 <td>{car.type}</td>
                 <td>Rp. {car.rentPerDay}</td>
-                <td>{car.startRent || '-'}</td>
-                <td>{car.finishRent || '-'}</td>
-                <td>{car.createdAt ? formatDate(car.createdAt) : '-'}</td>
-                <td>{car.updatedAt ? formatDate(car.updatedAt) : '-'}</td>
-                </tr>
+                <td>{car.startRent ? formatDate(car.startRent) : "-"}</td>
+                <td>{car.finishRent ? formatDate(car.finishRent) : "-"}</td>
+                <td>{car.createdAt ? formatDate(car.createdAt) : "-"}</td>
+                <td>{car.updatedAt ? formatDate(car.updatedAt) : "-"}</td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;
