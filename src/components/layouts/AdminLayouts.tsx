@@ -1,31 +1,17 @@
-import React,{ FC, ReactNode, useEffect } from "react";
-import feather from "feather-icons";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import React, { useEffect } from 'react';
+import feather from 'feather-icons';
+import { Outlet } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { NavLink } from 'react-router-dom';
+import BreadCrumbs from '../fragments/adminContent/BreadCrumbs';
 
-interface AdminLayoutsProps {
-  dashboard?: string;
-  cars?: string;
-  section: string;
-  subsection1: string;
-  children: ReactNode;
-}
-
-const AdminLayouts: FC<AdminLayoutsProps> = ({
-  dashboard,
-  cars,
-  section,
-  subsection1,
-  children,
-}) => {
-  const navigate = useNavigate();
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
+const AdminLayouts = () => {
+  console.log('Admin Layouts');
   const { user, logoutUser } = useAuth();
   useEffect(() => {
     feather.replace();
-  }), [];
+  }),
+    [];
   const onLogout = () => {
     logoutUser().then((res) => {
       console.log(res);
@@ -35,34 +21,38 @@ const AdminLayouts: FC<AdminLayoutsProps> = ({
     <div className="container-fluid g-container">
       <aside className="sidebar d-flex justify-content-center vh-100">
         <ul>
-          <li className="d-flex justify-content-center">
-            <Link className="navbar-brand" to="/admin">
-              <img
-                src={"/assets/images/logo-admin.png"}
-                alt="logo"
-                className="d-inline-block align-text-top mb-3"
-                width="34"
-                height="34"
-              />
-            </Link>
+          <li className="d-flex justify-content-center mb-3">
+            <img
+              src={'/assets/images/logo-admin.png'}
+              alt="logo"
+              className="d-inline-block align-text-top"
+              width="34"
+              height="34"
+            />
           </li>
           <li>
-            <button
-              className={`d-flex flex-column align-items-center text-light ${dashboard}`}
-              onClick={() => handleNavigation("/admin")}
-            >
+            <NavLink
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                `d-flex flex-column align-items-center text-light link-underline link-underline-opacity-0 p-2 ${
+                  isActive ? 'highlight' : ''
+                }`
+              }>
               <i data-feather="home"></i>
               <span className="text-nowrap">Dashboard</span>
-            </button>
+            </NavLink>
           </li>
           <li>
-            <button
-              className={`d-flex flex-column align-items-center text-light ${cars}`}
-              onClick={() => handleNavigation("/admin/cars")}
-            >
+            <NavLink
+              to={'/admin/cars'}
+              className={({ isActive }) =>
+                `d-flex flex-column align-items-center text-light link-underline link-underline-opacity-0 p-2 ${
+                  isActive ? 'highlight' : ''
+                }`
+              }>
               <i data-feather="truck"></i>
               <span>Cars</span>
-            </button>
+            </NavLink>
           </li>
         </ul>
       </aside>
@@ -82,10 +72,7 @@ const AdminLayouts: FC<AdminLayoutsProps> = ({
                   placeholder="Search"
                   aria-label="Search"
                 />
-                <button
-                  className="btn btn-outline-success navbar-search-button"
-                  type="submit"
-                >
+                <button className="btn btn-outline-success navbar-search-button" type="submit">
                   Search
                 </button>
               </form>
@@ -95,17 +82,13 @@ const AdminLayouts: FC<AdminLayoutsProps> = ({
                   type="button"
                   id="dropdownMenuButton1"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                  aria-expanded="false">
                   <div className="bg-info rounded-circle text-center navbar-user-initial">
                     {user?.initialUserName}
                   </div>
                   {user?.name}
                 </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton1"
-                >
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a className="dropdown-item" href="#">
                       Profile
@@ -126,15 +109,9 @@ const AdminLayouts: FC<AdminLayoutsProps> = ({
             </div>
           </div>
         </nav>
-        <div className="container-content">
-          <aside className="main-content-sidebar fw-bold fs-5 px-0">
-            <p className="ps-3 opacity-50">{section}</p>
-            <ul className="highlight ps-3 mt-4 py-2">
-              <li>{subsection1}</li>
-            </ul>
-          </aside>
-          <div className="container-fluid">{children}</div>
-        </div>
+        <BreadCrumbs>
+          <Outlet />
+        </BreadCrumbs>
       </main>
     </div>
   );

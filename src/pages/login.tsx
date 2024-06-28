@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { login } from "../services/user/auth.services";
 import { ILoginData } from "../services/user/loginTypes";
@@ -6,8 +6,9 @@ import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
+  console.log("Login Page");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const { verifyToken} = useAuth();
+  const {isAdmin, isAuthenticated, verifyToken} = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -21,11 +22,19 @@ export const LoginPage = () => {
     },
   });
 
+  useEffect(() => {
+    if(isAdmin){
+      navigate("/admin/dashboard");
+    } else if(isAuthenticated){
+      navigate("/");
+    }
+  }), [isAdmin, isAuthenticated];
+
   const onSubmit = (data: ILoginData) => {
     login(data).then(({ success, message, token }) => {
       if (success) {
         verifyToken(token);
-        navigate("/admin");
+        navigate("/admin/dashboard");
       } else {
         setErrorMessage(message);
       }

@@ -1,11 +1,8 @@
-import React, { FC, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { Link, Outlet } from 'react-router-dom'
 
-interface UserLayoutsProps {
-    children: ReactNode;
-    }
 
-const UserLayouts: FC<UserLayoutsProps> = ({children}) => {
+const UserLayouts = () => {
   return (
     <div>
         <nav className="navbar navbar-expand-md navbar-main pt-navbar px-14 fixed-top">
@@ -47,7 +44,7 @@ const UserLayouts: FC<UserLayoutsProps> = ({children}) => {
                   </div>
               </div>
           </nav>
-          {children}
+          <Outlet />
           <section id="footer" className="mx-14">
               <div className="container-fluid">
                   <div className="row">

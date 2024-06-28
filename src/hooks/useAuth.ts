@@ -10,7 +10,6 @@ export const useAuth = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   useEffect(() => {
     console.log("USE AUTH");
     console.log("isAuthenticated", isAuthenticated);
@@ -19,17 +18,22 @@ export const useAuth = () => {
       accessTokenExpiresIn &&
       parseInt(accessTokenExpiresIn) * 1000 > Date.now() && !isAuthenticated
     ) {
-      initializeUser().then((isVerified) => {
-        if (!isVerified) {
+      initializeUser().then((role) => {
+        if (!role) {
           navigate("/login");
+        }
+        if (role === "USER") {
+          setIsAdmin(false);
+        } else {
+          setIsAdmin(true);
         }
       });
     }
   }, []);
 
-  const initializeUser = async (): Promise<boolean> => {
+  const initializeUser = async ():Promise<string> => {
     const { success, data } = await getProfile();
-    if (!success) return false;
+    if (!success) return "";
     setIsAuthenticated(true);
     const authUser: IUser = {
       name: data.name,
@@ -37,16 +41,9 @@ export const useAuth = () => {
       role: data.role,
     };
     setUser(authUser);
-    if (data.role === "ADMIN") {
-      setIsAdmin(true);
-      navigate("/admin");
-    } else {
-      setIsAdmin(false);
-      navigate("/");
-    }
     console.log("initializeUser", authUser);
     // setIsLoading(false);
-    return true;
+    return data.role;
   };
 
   const verifyToken = async (token: string) => {
@@ -57,7 +54,20 @@ export const useAuth = () => {
           "accessTokenExpiresIn",
           JSON.stringify(decoded.exp)
         );
-        await initializeUser();
+        await initializeUser().then((role) => {
+          if (!role) {
+            logoutUser();
+          }
+          if (role === "USER") {
+            setIsAdmin(false);
+            navigate("/");
+          } else {
+            setIsAdmin(true);
+            navigate("/admin/dashboard");
+          }
+
+          console.log("User: ", user);
+        })
       }
     } catch (error) {
       console.error("Error verifying token: ", error);

@@ -1,53 +1,43 @@
-import React, { FC, useEffect, useState } from "react";
-import feather from "feather-icons";
-import { format } from "date-fns";
-import { CarProps } from "./carListCard/carTypes";
+import React, { useEffect, useState } from 'react';
+import { format } from 'date-fns';
+import { CarProps } from './carListCard/carTypes';
+import { getCarList } from '../../../services/car/car.services';
 
-interface DashboardProps {
-  isRefresh: boolean;
-  setRefresh: (status: boolean) => void;
-}
+// interface DashboardProps {
+//   isRefresh: boolean;
+//   setRefresh: (status: boolean) => void;
+// }
 
-const Dashboard: FC<DashboardProps> = ({ isRefresh, setRefresh }) => {
+const Dashboard = () => {
+  console.log('Dashboard');
   const [cars, setCars] = useState<[]>([]);
-  useEffect(() => {
-    feather.replace();
-  });
+  const [isRefresh, setRefresh] = useState(true);
 
   function formatDate(date: Date) {
-    return format(date, "d MMM yyyy, HH:mm");
+    return format(date, 'd MMM yyyy, HH:mm');
   }
 
   useEffect(() => {
     if (isRefresh) {
-      fetch("http://localhost:8000/cars")
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setRefresh(false);
-          setCars(data);
+      getCarList()
+        .then(({ success, data }) => {
+          if (success) {
+            console.log('getCarList success');
+            setRefresh(false);
+            setCars(data);
+          }
         })
         .catch((err) => {
           setRefresh(false);
-          if (err.name === "AbortError") {
-            console.log("fetch aborted.");
+          if (err.name === 'AbortError') {
+            console.log('fetch aborted.');
           }
         });
     }
   }, [isRefresh, setRefresh]);
 
   return (
-    <div className="ms-2">
-      <p className="mt-4 d-flex align-items-center gap-1">
-        <b>Dashboard</b>
-        <i
-          data-feather="chevron-right"
-          className="mt-1"
-          style={{ width: "20px", height: "20px" }}
-        />
-        <span>Dashboard</span>
-      </p>
+    <>
       <div className="container-fluid navbar mb-4">
         <b className="fw-bold fs-3">DashBoard</b>
       </div>
@@ -70,22 +60,22 @@ const Dashboard: FC<DashboardProps> = ({ isRefresh, setRefresh }) => {
             </tr>
           </thead>
           <tbody>
-            {cars.map((car: CarProps, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
+            {cars.map((car: CarProps) => (
+              <tr key={car.id}>
+                <td>{car.id}</td>
                 <td>{car.model}</td>
                 <td>{car.type}</td>
-                <td>Rp. {car.rentPerDay}</td>
-                <td>{car.startRent ? formatDate(car.startRent) : "-"}</td>
-                <td>{car.finishRent ? formatDate(car.finishRent) : "-"}</td>
-                <td>{car.createdAt ? formatDate(car.createdAt) : "-"}</td>
-                <td>{car.updatedAt ? formatDate(car.updatedAt) : "-"}</td>
+                <td>Rp{" "} {Number(car.price).toLocaleString("id-ID", {currency:"IDR"})}</td>
+                <td>{car.startRent ? formatDate(car.startRent) : '-'}</td>
+                <td>{car.finishRent ? formatDate(car.finishRent) : '-'}</td>
+                <td>{car.createdAt ? formatDate(car.createdAt) : '-'}</td>
+                <td>{car.updatedAt ? formatDate(car.updatedAt) : '-'}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 

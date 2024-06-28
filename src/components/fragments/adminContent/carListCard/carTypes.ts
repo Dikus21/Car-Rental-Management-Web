@@ -1,12 +1,16 @@
 export interface CarProps{
-    id:string;
+    id:number;
     model:string;
     type:string;
+    year:string;
     image?:string;
-    rentPerDay:number;
+    imageUrl:string;
+    price:number;
+    rentPerDay?:number;
     startRent?:Date;
     finishRent?:Date;
     createdAt?:Date;
     updatedAt?:Date;
     deletedAt?:Date;
+
 }
