@@ -97,7 +97,7 @@ html {
   height: auto;
 }
 
-.btn-register:hover, .nav-item a:hover, .navbar-brand:hover{
+.btn-register:hover{
   border-style: solid;
   border-color: black;
   border-width: 1px;
@@ -503,9 +503,6 @@ html {
   background-image: url('/assets/images/login-bg-img.png');
   background-size: cover;
   background-position: center;
-}
-.login-form {
-  background-color: #ffffff;
 }
 .login-btn {
   background-color: #0D28A6;

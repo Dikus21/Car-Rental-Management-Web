@@ -1,3 +1,5 @@
+import { createContext } from "react";
+
 export interface CarProps{
     id:number;
     model:string;
@@ -12,5 +14,6 @@ export interface CarProps{
     createdAt?:Date;
     updatedAt?:Date;
     deletedAt?:Date;
-
 }
+
+export const CarsListContext = createContext<{cars: CarProps[], fetchCarList: () => void} | null>(null);

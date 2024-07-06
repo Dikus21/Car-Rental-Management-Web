@@ -1,48 +1,68 @@
-import { useEffect, useState } from "react";
-import { IUser } from "./userTypes";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import { getProfile, logout } from "../services/user/auth.services";
+import { useEffect, useState } from 'react';
+import { IUser } from './userTypes';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { getProfile, login, logout, refreshToken, register } from '../services/user/auth.services';
+import { ILoginData, IRegisterData } from '../components/fragments/userContent/userTypes';
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<IUser | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   useEffect(() => {
-    console.log("USE AUTH");
-    console.log("isAuthenticated", isAuthenticated);
-    const accessTokenExpiresIn = localStorage.getItem("accessTokenExpiresIn");
+    console.log('USE AUTH');
+    console.log('isAuthenticated', isAuthenticated);
+    const accessTokenExpiresIn = localStorage.getItem('accessTokenExpiresIn');
     if (
       accessTokenExpiresIn &&
-      parseInt(accessTokenExpiresIn) * 1000 > Date.now() && !isAuthenticated
+      parseInt(accessTokenExpiresIn) * 1000 > Date.now() &&
+      !isAuthenticated
     ) {
-      initializeUser().then((role) => {
-        if (!role) {
-          navigate("/login");
-        }
-        if (role === "USER") {
-          setIsAdmin(false);
-        } else {
-          setIsAdmin(true);
-        }
-      });
+      initializeUser();
+    } else if (accessTokenExpiresIn && parseInt(accessTokenExpiresIn) * 1000 < Date.now()) {
+      refreshAccessToken();
     }
   }, []);
 
-  const initializeUser = async ():Promise<string> => {
+  const loginUser = async (data: ILoginData): Promise<string> => {
+    return login(data)
+      .then(({ success, message, token }) => {
+        if (success) {
+          verifyToken(token);
+        }
+        return message;
+      })
+      .catch((error) => {
+        console.error('Error logging in: ', error);
+        return 'Error logging in';
+      });
+  };
+
+  const registerUser = async (data: IRegisterData): Promise<string> => {
+    return register(data).then(({success, message}) => {
+      if (success) {
+        navigate('/login');
+      }
+      return message;      
+    })
+  }
+  const initializeUser = async (): Promise<string> => {
     const { success, data } = await getProfile();
-    if (!success) return "";
+    if (!success) return '';
     setIsAuthenticated(true);
     const authUser: IUser = {
       name: data.name,
       initialUserName: data.name.charAt(0).toUpperCase(),
-      role: data.role,
+      role: data.role
     };
     setUser(authUser);
-    console.log("initializeUser", authUser);
-    // setIsLoading(false);
+    if (data.role === 'USER') {
+      setIsAdmin(false);
+    } else {
+      setIsAdmin(true);
+    }
+    console.log('initializeUser', authUser);
     return data.role;
   };
 
@@ -50,43 +70,52 @@ export const useAuth = () => {
     try {
       const decoded = jwtDecode(token);
       if (decoded) {
-        localStorage.setItem(
-          "accessTokenExpiresIn",
-          JSON.stringify(decoded.exp)
-        );
+        localStorage.setItem('accessTokenExpiresIn', JSON.stringify(decoded.exp));
         await initializeUser().then((role) => {
           if (!role) {
             logoutUser();
           }
-          if (role === "USER") {
+          if (role === 'USER') {
             setIsAdmin(false);
-            navigate("/");
+            navigate('/');
           } else {
             setIsAdmin(true);
-            navigate("/admin/dashboard");
+            navigate('/admin/dashboard');
           }
 
-          console.log("User: ", user);
-        })
+          console.log('User: ', user);
+        });
       }
     } catch (error) {
-      console.error("Error verifying token: ", error);
+      console.error('Error verifying token: ', error);
       logoutUser();
     }
   };
 
-  const logoutUser = async () => {
+  const logoutUser = async (): Promise<void> => {
     const { success, message } = await logout();
-    if (success) {
-      setIsAuthenticated(false);
-      setUser(null);
+    if (!success) {
+      console.log('Error logging out: ', message);
+    }
+    setIsAuthenticated(false);
+    setUser(null);
+    if (isAdmin) {
       setIsAdmin(false);
-      localStorage.removeItem("accessTokenExpiresIn");
-      navigate("/login");
+      navigate('/login');
+    }
+    localStorage.removeItem('accessTokenExpiresIn');
+  };
+
+  const refreshAccessToken = async () => {
+    const { success } = await refreshToken();
+    if (!success) {
+      logoutUser();
     } else {
-      console.error("Logout failed: ", message);
+      if (!isAuthenticated) {
+        initializeUser();
+      }
     }
   };
 
-  return { isAuthenticated, user, isAdmin, verifyToken, logoutUser};
+  return { isAuthenticated, user, isAdmin, verifyToken, logoutUser, refreshAccessToken, loginUser, registerUser };
 };

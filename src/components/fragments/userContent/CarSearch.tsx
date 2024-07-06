@@ -1,41 +1,17 @@
-import React, { FC, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import React, { useEffect, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-import AOS from "aos";
-import feather from "feather-icons";
-import { Calendar } from "react-feather";
-
-interface CustomInputProps {
-  value: string;
-  onClick: () => void;
-}
+import feather from 'feather-icons';
+import { Calendar } from 'react-feather';
 
 const CarSearch = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const CustomInput: FC<CustomInputProps> = ({ value, onClick }) => (
-    <div className="input-group" onClick={onClick}>
-      <input
-        type="text"
-        className="form-control datepicker text-l-12"
-        value={value ? value : ""}
-        onChange={() => {}}
-        placeholder="Tanggal Sewa"
-        required
-      />
-      <div role="right-icon" className="input-group-text">
-        <Calendar className="form-icon" />
-      </div>
-    </div>
-  );
+  const [driverType, setDriverType] = useState<string>('');
+  const [pickupTime, setPickupTime] = useState<string>('');
+
   useEffect(() => {
     feather.replace();
-    AOS.init({
-      once: true,
-    });
-    return () => {
-      AOS.refresh();
-    };
   }, []);
   return (
     <div>
@@ -47,15 +23,14 @@ const CarSearch = () => {
                 Sewa &amp; Rental Mobil Terbaik di kawasan &#40;Lokasimu&#41;
               </p>
               <p className="text-l-14">
-                Selamat datang di Binar Car Rental. Kami menyediakan mobil
-                kualitas terbaik dengan harga terjangkau. Selalu siap melayani
-                kebutuhanmu untuk sewa mobil selama 24 jam.
+                Selamat datang di Binar Car Rental. Kami menyediakan mobil kualitas terbaik dengan
+                harga terjangkau. Selalu siap melayani kebutuhanmu untuk sewa mobil selama 24 jam.
               </p>
             </div>
             <div className="col-12 col-md-6 main-img-container">
               <div className="car-bg">
                 <img
-                  src={"/assets/images/Mercedes-Car.png"}
+                  src={'/assets/images/Mercedes-Car.png'}
                   className="car-img figure-img img-fluid"
                 />
               </div>
@@ -74,8 +49,9 @@ const CarSearch = () => {
                   name="Tipe Driver"
                   className="form-select text-l-12"
                   required
-                >
-                  <option value="" hidden disabled selected>
+                  value={driverType}
+                  onChange={(e) => setDriverType(e.target.value)}>
+                  <option value="" hidden disabled>
                     Pilih Tipe Driver
                   </option>
                   <option value="1">Dengan Sopir</option>
@@ -90,12 +66,20 @@ const CarSearch = () => {
                   <DatePicker
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
-                    dateFormat="yyyy-MM-dd"
                     customInput={
-                      <CustomInput
-                        value={startDate ? startDate.toDateString() : ""}
-                        onClick={() => {}}
-                      />
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control datepicker text-l-12"
+                          value={startDate ? startDate.toDateString() : ''}
+                          placeholder="Tanggal Sewa"
+                          onChange={() => {}}
+                          required
+                        />
+                        <div role="right-icon" className="input-group-text">
+                          <Calendar className="form-icon" />
+                        </div>
+                      </div>
                     }
                   />
                 </div>
@@ -108,9 +92,10 @@ const CarSearch = () => {
                   id="time"
                   name="Waktu Sewa"
                   className="form-select text-l-12"
-                  required
-                >
-                  <option value="" hidden selected disabled>
+                  value={pickupTime}
+                  onChange={(e) => setPickupTime(e.target.value)}
+                  required>
+                  <option value="" hidden disabled>
                     Pilih Waktu
                   </option>
                   <option value="08:00">08:00</option>
@@ -141,8 +126,7 @@ const CarSearch = () => {
                 <button
                   type="submit"
                   className="btn btn-register text-b-14 position-absolute bottom-0 w-100"
-                  id="search-btn"
-                >
+                  id="search-btn">
                   Cari Mobil
                 </button>
               </div>

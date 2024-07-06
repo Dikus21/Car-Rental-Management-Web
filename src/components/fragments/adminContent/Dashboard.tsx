@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { format } from 'date-fns';
-import { CarProps } from './carListCard/carTypes';
-import { getCarList } from '../../../services/car/car.services';
+import { CarProps, CarsListContext } from './carListCard/carTypes';
 
 // interface DashboardProps {
 //   isRefresh: boolean;
@@ -10,31 +9,11 @@ import { getCarList } from '../../../services/car/car.services';
 
 const Dashboard = () => {
   console.log('Dashboard');
-  const [cars, setCars] = useState<[]>([]);
-  const [isRefresh, setRefresh] = useState(true);
+  const carContext = React.useContext(CarsListContext);
 
   function formatDate(date: Date) {
     return format(date, 'd MMM yyyy, HH:mm');
   }
-
-  useEffect(() => {
-    if (isRefresh) {
-      getCarList()
-        .then(({ success, data }) => {
-          if (success) {
-            console.log('getCarList success');
-            setRefresh(false);
-            setCars(data);
-          }
-        })
-        .catch((err) => {
-          setRefresh(false);
-          if (err.name === 'AbortError') {
-            console.log('fetch aborted.');
-          }
-        });
-    }
-  }, [isRefresh, setRefresh]);
 
   return (
     <>
@@ -60,12 +39,12 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {cars.map((car: CarProps) => (
+            {carContext?.cars.map((car: CarProps) => (
               <tr key={car.id}>
                 <td>{car.id}</td>
                 <td>{car.model}</td>
                 <td>{car.type}</td>
-                <td>Rp{" "} {Number(car.price).toLocaleString("id-ID", {currency:"IDR"})}</td>
+                <td>Rp {Number(car.price).toLocaleString('id-ID', { currency: 'IDR' })}</td>
                 <td>{car.startRent ? formatDate(car.startRent) : '-'}</td>
                 <td>{car.finishRent ? formatDate(car.finishRent) : '-'}</td>
                 <td>{car.createdAt ? formatDate(car.createdAt) : '-'}</td>

@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Notification from '../../../elements/Notification/Notification';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CarCard from './CarCard';
-import { CarProps } from './carTypes';
-import { getCarList } from '../../../../services/car/car.services';
+import { CarsListContext } from './carTypes';
 
 const CarLists = () => {
-  const [cars, setCars] = useState<CarProps[]>([]);
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationColor, setNotificationColor] = useState('');
-  const [isRefresh, setRefresh] = useState(true);
+  const carContext = useContext(CarsListContext);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,25 +20,6 @@ const CarLists = () => {
       navigate(location.pathname, { replace: true });
     }
   }, [location.state]);
-
-  useEffect(() => {
-    if (isRefresh) {
-      getCarList()
-        .then(({ success, data }) => {
-          if (success) {
-            console.log('getCarList success');
-            setRefresh(false);
-            setCars(data);
-          }
-        })
-        .catch((err) => {
-          setRefresh(false);
-          if (err.name === 'AbortError') {
-            console.log('fetch aborted.');
-          }
-        });
-    }
-  }, [isRefresh, setRefresh]);
 
   useEffect(() => {
     if (notificationMessage) {
@@ -81,11 +60,11 @@ const CarLists = () => {
         </button>
       </div>
       <div id="cars-card-container" className="container-fluid d-flex flex-wrap">
-        {cars.map((car) => (
+        {carContext?.cars.map((car) => (
           <CarCard
             car={car}
             key={car.id}
-            setRefresh={setRefresh}
+            setRefresh={carContext.fetchCarList}
             setNotificationMessage={setNotificationMessage}
             setNotificationColor={setNotificationColor}
           />

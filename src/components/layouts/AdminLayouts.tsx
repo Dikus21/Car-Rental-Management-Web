@@ -1,19 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import feather from 'feather-icons';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { NavLink } from 'react-router-dom';
 import BreadCrumbs from '../fragments/adminContent/BreadCrumbs';
+import { CarProps, CarsListContext } from '../fragments/adminContent/carListCard/carTypes';
+import { getCarList } from '../../services/car/car.services';
 
 const AdminLayouts = () => {
   console.log('Admin Layouts');
+  const [cars, setCars] = useState<CarProps[]>([]);
   const { user, logoutUser } = useAuth();
+  const [isRefresh, setRefresh] = useState(true);
+
+  const fetchCarList = async () => {
+    console.log('getCarList');
+    await getCarList()
+      .then(({ success, data }) => {
+        if (success) {
+          console.log('getCarList success');
+          setRefresh(false);
+          setCars(data);
+        }
+      })
+      .catch((err) => {
+        setRefresh(false);
+        if (err.name === 'AbortError') {
+          console.log('fetch aborted.');
+        }
+      });
+  };
+
+  useEffect(() => {
+    if (isRefresh) {
+      fetchCarList();
+    }
+  }, [isRefresh, setRefresh]);
+
   useEffect(() => {
     feather.replace();
   }),
     [];
-  const onLogout = () => {
-    logoutUser().then((res) => {
+
+  const onLogout = async () => {
+    await logoutUser().then((res) => {
       console.log(res);
     });
   };
@@ -110,7 +140,9 @@ const AdminLayouts = () => {
           </div>
         </nav>
         <BreadCrumbs>
-          <Outlet />
+          <CarsListContext.Provider value={{ cars, fetchCarList }}>
+            <Outlet />
+          </CarsListContext.Provider>
         </BreadCrumbs>
       </main>
     </div>
