@@ -1,19 +1,10 @@
 import React from 'react';
-import { format } from 'date-fns';
 import { CarProps, CarsListContext } from './carListCard/carTypes';
-
-// interface DashboardProps {
-//   isRefresh: boolean;
-//   setRefresh: (status: boolean) => void;
-// }
+import { formatDate, formatDateTime } from '../../../utils/function';
 
 const Dashboard = () => {
   console.log('Dashboard');
   const carContext = React.useContext(CarsListContext);
-
-  function formatDate(date: Date) {
-    return format(date, 'd MMM yyyy, HH:mm');
-  }
 
   return (
     <>
@@ -43,12 +34,12 @@ const Dashboard = () => {
               <tr key={car.id}>
                 <td>{car.id}</td>
                 <td>{car.model}</td>
-                <td>{car.type}</td>
-                <td>Rp {Number(car.price).toLocaleString('id-ID', { currency: 'IDR' })}</td>
+                <td>{car.manufacture}</td>
+                <td>Rp {Number(car.rentPerDay).toLocaleString('id-ID', { currency: 'IDR' })}</td>
                 <td>{car.startRent ? formatDate(car.startRent) : '-'}</td>
-                <td>{car.finishRent ? formatDate(car.finishRent) : '-'}</td>
-                <td>{car.createdAt ? formatDate(car.createdAt) : '-'}</td>
-                <td>{car.updatedAt ? formatDate(car.updatedAt) : '-'}</td>
+                <td>{car.endRent ? formatDate(car.endRent) : '-'}</td>
+                <td>{car.createdAt ? formatDateTime(car.createdAt) : '-'}</td>
+                <td>{car.updatedAt ? formatDateTime(car.updatedAt) : '-'}</td>
               </tr>
             ))}
           </tbody>

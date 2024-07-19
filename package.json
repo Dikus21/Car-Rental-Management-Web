@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.9.0",
     "aos": "^2.3.4",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
@@ -19,6 +20,7 @@
     "feather-icons": "^4.29.2",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
+    "qs": "^6.12.3",
     "react": "^18.2.0",
     "react-datepicker": "^7.0.0",
     "react-dom": "^18.3.1",
@@ -26,8 +28,10 @@
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.52.0",
     "react-router-dom": "^6.23.1",
+    "react-router-hash-link": "^2.4.3",
     "swiper": "^11.1.4",
-    "typeface-rubik": "^1.1.13"
+    "typeface-rubik": "^1.1.13",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.0",
@@ -38,9 +42,11 @@
     "@types/bootstrap": "^5.2.10",
     "@types/feather-icons": "^4.29.4",
     "@types/js-cookie": "^3.0.6",
+    "@types/qs": "^6.9.15",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-router-hash-link": "^2.4.9",
     "@types/swiper": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^7.14.1",
     "@typescript-eslint/parser": "^7.14.1",

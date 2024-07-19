@@ -12,11 +12,13 @@ import CarLists from './components/fragments/adminContent/carListCard/CarLists';
 import CarAdd from './components/fragments/adminContent/CarAdd';
 import UserLayouts from './components/layouts/UserLayouts';
 import HomeContent from './components/fragments/userContent/HomeContent';
-import CarSearch from './components/fragments/userContent/CarSearch';
+import CarSearch from './components/fragments/userContent/carSearch/CarSearch';
 import AuthorizedRoute from './utils/AuthorizedRoute';
 import AuthLayouts from './components/layouts/AuthLayouts';
 import LoginForm from './components/fragments/userContent/LoginForm';
 import RegisterForm from './components/fragments/userContent/RegisterForm';
+import NotFound from './components/fragments/NotFound';
+import TemporarilyUnavailable from './components/fragments/TemporarilyUnavailable';
 
 const router = createBrowserRouter([
   {
@@ -66,6 +68,24 @@ const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    element: <TemporarilyUnavailable />,
+    children: [
+      {
+        path: 'cars/order'
+      },
+      {
+        path: 'profile'
+      },
+      {
+        path: 'settings'
+      }
+    ]
+  },
+  {
+    path: '*',
+    element: <NotFound />
   }
 ]);
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -1,10 +1,10 @@
 import React, { FC, useState } from 'react';
 import CarDeleteModal from './CarDeleteModal';
-import { format } from 'date-fns';
-import { CarProps } from './carTypes';
 import CarEditModal from './CarEditModal';
 import { Clock, Edit, Key, Trash } from 'react-feather';
 import { deleteCar, updateCar } from '../../../../services/car/car.services';
+import { CarProps } from './carTypes';
+import { formatDate, formatDateTime } from '../../../../utils/function';
 
 interface CarCardProps {
   car: CarProps;
@@ -21,10 +21,6 @@ const CarCard: FC<CarCardProps> = ({
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  function formatDate(date: Date | string) {
-    return format(date, 'd MMM yyyy, HH:mm');
-  }
 
   const handleUpdate = (carId: number, updatedCar: FormData) => {
     updateCar(carId, updatedCar)
@@ -68,22 +64,26 @@ const CarCard: FC<CarCardProps> = ({
         />
         <div className="card-body">
           <p className="card-text fw-bold">
-            {car.model}/{car.type ? car.type : 'Tipe Mobil'}
+            {car.model}/{car.manufacture ? car.manufacture : 'Tipe Mobil'}
           </p>
           <p className="fw-bold fs-5">
-            Rp {Number(car.price).toLocaleString('id-ID', { currency: 'IDR' })} /hari
+            Rp {Number(car.rentPerDay).toLocaleString('id-ID', { currency: 'IDR' })} /hari
           </p>
           <div className="d-flex align-items-center my-2">
             <Key className="car-icon" />
-            <p className="my-0 mx-2">Start Rent - Finish Rent</p>
+            <p className="my-0 mx-2">
+              {car.startRent && car.endRent
+                ? `Rent Date, ${formatDate(car.startRent)} - ${formatDate(car.endRent)}`
+                : `Start Rent - End Rent`}
+            </p>
           </div>
           <div className="d-flex align-items-center my-2">
             <Clock className="car-icon" />
             <p className="my-0 mx-2">
               {car.updatedAt
-                ? `Updated At ${formatDate(car.updatedAt)}`
+                ? `Updated At ${formatDateTime(car.updatedAt)}`
                 : car.createdAt
-                ? `Created At ${formatDate(car.createdAt)}`
+                ? `Created At ${formatDateTime(car.createdAt)}`
                 : 'Updated At 4 Apr 2022, 09:00'}
             </p>
           </div>

@@ -1,59 +1,77 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CarProps } from './carListCard/carTypes';
+import { CarAddDto, CarFormProps } from './carListCard/carTypes';
 import { Controller, useForm } from 'react-hook-form';
-import { useDropzone } from 'react-dropzone';
+import { FileRejection, useDropzone } from 'react-dropzone';
 import { addCar } from '../../../services/car/car.services';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export default function CarAdd() {
   const {
     control,
     handleSubmit,
-    reset
-    // formState: { errors }
-  } = useForm<CarProps>({
-    defaultValues: {
-      model: '',
-      price: 0,
-      type: '',
-      image: '',
-      year: ''
-    }
+    reset,
+    formState: { errors },
+    setError,
+    clearErrors
+  } = useForm<CarFormProps>({
+    resolver: yupResolver(CarAddDto)
   });
   const navigate = useNavigate();
+
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     console.log(acceptedFiles);
     const acceptedFile = acceptedFiles[0];
     console.log(acceptedFile);
-    if (acceptedFile) {
+    const rejectedFile = rejectedFiles[0];
+    let rejectedMessage: string;
+    console.log(rejectedFile);
+    if (rejectedFile) {
+      if (rejectedFile.errors[0].code === 'file-too-large') {
+        rejectedMessage = 'File too Large, Max file size is 1.5MB';
+      } else if (rejectedFile.errors[0].code === 'file-invalid-type') {
+        rejectedMessage = 'Only images are allowed';
+      } else {
+        rejectedMessage = 'File rejected for unknown reason';
+      }
+      setPreview('');
+      setFile(null);
+      setError('image', { message: rejectedMessage });
+    } else {
       setFile(acceptedFile);
       setPreview(URL.createObjectURL(acceptedFile));
+      clearErrors('image');
     }
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: { 'image/*': [] },
-    onDrop
+    onDrop,
+    maxSize: 1.5 * 1024 * 1024
   });
 
-  function onSubmit(data: CarProps) {
+  function onSubmit(data: CarFormProps) {
     console.log(data);
     const formData = new FormData();
     formData.append('model', data.model);
-    formData.append('type', data.type);
+    formData.append('manufacture', data.manufacture);
     formData.append('year', data.year);
-    formData.append('price', data.price.toString());
+    formData.append('rentPerDay', data.rentPerDay.toString());
+    formData.append('capacity', data.capacity.toString());
+    formData.append('transmission', data.transmission);
+    formData.append('withDriver', data.withDriver);
+    formData.append('description', data.description ?? '');
     if (file) {
       formData.append('image', file);
     }
 
-    addCar(formData).then(({ success, message }) => {
-      if (success) {
+    addCar(formData).then((response) => {
+      if (response && response.success) {
         reset();
         navigate('/admin/cars', {
-          state: { notificationMessage: message, notificationColor: 'green' }
+          state: { notificationMessage: response.message, notificationColor: 'green' }
         });
       }
     });
@@ -76,33 +94,37 @@ export default function CarAdd() {
                 <div className="col">
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${errors.model && 'border-danger'}`}
                     id="model"
                     {...field}
                     placeholder="Car Model"
                   />
+                  {errors.model && <span className="text-danger">{errors.model.message}</span>}
                 </div>
               </div>
             )}
           />
           <Controller
-            name="type"
+            name="manufacture"
             control={control}
             render={({ field }) => (
               <div className="row mb-3">
                 <div className="col-3">
-                  <label htmlFor="type" className="form-label">
-                    Type
+                  <label htmlFor="manufacture" className="form-label">
+                    Manufacture
                   </label>
                 </div>
                 <div className="col">
                   <input
                     type="text"
-                    className="form-control"
-                    id="type"
+                    className={`form-control ${errors.manufacture && 'border-danger'}`}
+                    id="manufacture"
                     {...field}
-                    placeholder="Car Type"
+                    placeholder="Car Manufacture"
                   />
+                  {errors.manufacture && (
+                    <span className="text-danger">{errors.manufacture.message}</span>
+                  )}
                 </div>
               </div>
             )}
@@ -120,34 +142,144 @@ export default function CarAdd() {
                 <div className="col">
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${errors.year && 'border-danger'}`}
                     id="year"
                     {...field}
                     placeholder="Year"
                   />
+                  {errors.year && <span className="text-danger">{errors.year.message}</span>}
                 </div>
               </div>
             )}
           />
           <Controller
-            name="price"
+            name="capacity"
             control={control}
-            rules={{ required: 'This field is required' }}
             render={({ field }) => (
               <div className="row mb-3">
                 <div className="col-3">
-                  <label htmlFor="price" className="form-label">
-                    Price
+                  <label htmlFor="capacity" className="form-label">
+                    Capacity
                   </label>
                 </div>
                 <div className="col">
                   <input
                     type="number"
-                    className="form-control"
-                    id="price"
+                    className={`form-control ${errors.capacity && 'border-danger'}`}
+                    id="capacity"
                     {...field}
-                    placeholder="Price"
+                    placeholder="Capacity"
                   />
+                  {errors.capacity && (
+                    <span className="text-danger">{errors.capacity.message}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          />
+          <Controller
+            name="transmission"
+            control={control}
+            render={({ field }) => (
+              <div className="row mb-3">
+                <div className="col-3">
+                  <label htmlFor="transmission" className="form-label">
+                    Transmission
+                  </label>
+                </div>
+                <div className="col">
+                  <select
+                    className={`form-select ${errors.transmission && 'border-danger'}`}
+                    id="transmission"
+                    {...field}>
+                    <option value="" hidden>
+                      Select Transmission
+                    </option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="Manual">Manual</option>
+                  </select>
+                  {errors.transmission && (
+                    <span className="text-danger">{errors.transmission.message}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          />
+          <Controller
+            name="withDriver"
+            control={control}
+            render={({ field }) => (
+              <div className="row mb-3">
+                <div className="col-3">
+                  <label htmlFor="withDriver" className="form-label">
+                    Driver
+                  </label>
+                </div>
+                <div className="col">
+                  <select
+                    className={`form-select ${errors.withDriver && 'border-danger'}`}
+                    id="withDriver"
+                    {...field}
+                    onChange={(e) => field.onChange(e.target.value)}>
+                    <option value="" hidden>
+                      Select Driver
+                    </option>
+                    <option value="true">Dengan Driver</option>
+                    <option value="false">Tanpa Driver</option>
+                  </select>
+                  {errors.withDriver && (
+                    <span className="text-danger">{errors.withDriver.message}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          />
+          <Controller
+            name="rentPerDay"
+            control={control}
+            rules={{ required: 'This field is required' }}
+            render={({ field }) => (
+              <div className="row mb-3">
+                <div className="col-3">
+                  <label htmlFor="rentPerDay" className="form-label">
+                    Rent Per Day
+                  </label>
+                </div>
+                <div className="col">
+                  <input
+                    type="number"
+                    className={`form-control ${errors.rentPerDay && 'border-danger'}`}
+                    id="rentPerDay"
+                    {...field}
+                    placeholder="Rent Per Day"
+                  />
+                  {errors.rentPerDay && (
+                    <span className="text-danger">{errors.rentPerDay.message}</span>
+                  )}
+                </div>
+              </div>
+            )}
+          />
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <div className="row mb-3">
+                <div className="col-3">
+                  <label htmlFor="description" className="form-label">
+                    Description
+                  </label>
+                </div>
+                <div className="col">
+                  <textarea
+                    className={`form-control ${errors.description && 'border-danger'}`}
+                    id="description"
+                    {...field}
+                    placeholder="Description"
+                  />
+                  {errors.description && (
+                    <span className="text-danger">{errors.description.message}</span>
+                  )}
                 </div>
               </div>
             )}
@@ -165,7 +297,9 @@ export default function CarAdd() {
                 <div className="col">
                   <div
                     {...getRootProps({
-                      className: 'text-center border border-1 border-black rounded-3 p-3'
+                      className: `text-center border border-1 rounded-3 p-3 ${
+                        errors.image ? 'border-danger' : 'border-black'
+                      }`
                     })}>
                     <input {...getInputProps()} {...field} />
                     {file ? (
@@ -180,11 +314,15 @@ export default function CarAdd() {
                         }}
                       />
                     ) : (
-                      <p className="fw-normal fs-4">
+                      <p
+                        className={`fs-4 ${
+                          errors.image ? 'text-danger' : 'text-black'
+                        }`}>
                         Drag & drop files here, or click to select files
                       </p>
                     )}
                   </div>
+                  {errors.image && <span className="text-danger">{errors.image.message}</span>}
                 </div>
               </div>
             )}

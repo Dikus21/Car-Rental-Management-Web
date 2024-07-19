@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import BreadCrumbs from '../fragments/adminContent/BreadCrumbs';
 import { CarProps, CarsListContext } from '../fragments/adminContent/carListCard/carTypes';
 import { getCarList } from '../../services/car/car.services';
+import { Link } from 'react-router-dom';
 
 const AdminLayouts = () => {
   console.log('Admin Layouts');
@@ -102,7 +103,7 @@ const AdminLayouts = () => {
                   placeholder="Search"
                   aria-label="Search"
                 />
-                <button className="btn btn-outline-success navbar-search-button" type="submit">
+                <button className="btn btn-outline-success navbar-search-button">
                   Search
                 </button>
               </form>
@@ -120,14 +121,14 @@ const AdminLayouts = () => {
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="/profile">
                       Profile
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="/settings">
                       Settings
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <button className="dropdown-item" onClick={onLogout}>

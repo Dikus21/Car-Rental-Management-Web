@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import {Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { HashLink } from 'react-router-hash-link';
 
 const UserLayouts = () => {
   const navigate = useNavigate();
@@ -23,13 +24,13 @@ const UserLayouts = () => {
     <div>
       <nav className="navbar navbar-expand-md navbar-main pt-navbar px-14 fixed-top">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
+          <HashLink className="navbar-brand" to="/#main">
             <img
               src="/assets/images/logo.png"
               alt="logo"
               className="logo d-inline-block align-text-top"
             />
-          </Link>
+          </HashLink>
           <button
             className="navbar-toggler"
             type="button"
@@ -60,24 +61,24 @@ const UserLayouts = () => {
             <div className="offcanvas-body">
               <ul className="navbar-nav ms-auto gap-2 d-flex align-items-center">
                 <li className="nav-item">
-                  <a className="nav-link active text-r-14" href="#our-services">
+                  <HashLink className="nav-link active text-r-14" to="/#our-services">
                     Our Services
-                  </a>
+                  </HashLink>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active text-r-14" href="#why-us">
+                  <HashLink className="nav-link active text-r-14" to="/#why-us">
                     Why Us
-                  </a>
+                  </HashLink>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active text-r-14" href="#testimonial">
+                  <HashLink className="nav-link active text-r-14" to="/#testimonial">
                     Testimonial
-                  </a>
+                  </HashLink>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link active text-r-14" href="#faq">
+                  <HashLink className="nav-link active text-r-14" to="/#faq">
                     FAQ
-                  </a>
+                  </HashLink>
                 </li>
                 <li className="nav-item d-flex gap-4">
                   {isAuthenticated ? (
@@ -114,6 +115,7 @@ const UserLayouts = () => {
                   ) : (
                     <>
                       <button
+                        aria-label="Login"
                         type="button"
                         className="btn btn-register text-b-14 px-4"
                         onClick={() => navigate('/login')}>
