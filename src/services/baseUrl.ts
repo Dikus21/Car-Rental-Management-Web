@@ -3,7 +3,6 @@ import { refreshToken } from './user/auth.services';
 
 // let hasTriedRefreshToken = false;
 const ignorePaths = ['/refresh-token', '/user/logout'];
-console.log('API URL: ', import.meta.env.VITE_API_URL);
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

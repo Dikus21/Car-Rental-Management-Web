@@ -40,13 +40,13 @@ export const useAuth = () => {
   };
 
   const registerUser = async (data: IRegisterData): Promise<string> => {
-    return register(data).then(({success, message}) => {
+    return register(data).then(({ success, message }) => {
       if (success) {
         navigate('/login');
       }
-      return message;      
-    })
-  }
+      return message;
+    });
+  };
   const initializeUser = async (): Promise<string> => {
     const { success, data } = await getProfile();
     if (!success) return '';
@@ -117,5 +117,14 @@ export const useAuth = () => {
     }
   };
 
-  return { isAuthenticated, user, isAdmin, verifyToken, logoutUser, refreshAccessToken, loginUser, registerUser };
+  return {
+    isAuthenticated,
+    user,
+    isAdmin,
+    verifyToken,
+    logoutUser,
+    refreshAccessToken,
+    loginUser,
+    registerUser
+  };
 };
