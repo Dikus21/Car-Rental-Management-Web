@@ -18,6 +18,7 @@ export const getCarList = async () => {
 export const getSearchCars = async (data: CarSearchProps) => {
   try {
     const response = await axiosInstance.get('/car/search', { params: data });
+    console.log('response carSearch: ', response.data);
     if (response.status === 200) {
       return { success: true, data: response.data };
     }
