@@ -1,5 +1,5 @@
 import feather from 'feather-icons';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import AOS from 'aos';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';

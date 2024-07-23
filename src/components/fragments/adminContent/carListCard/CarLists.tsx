@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import Notification from '../../../elements/Notification/Notification';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CarCard from './CarCard';
@@ -13,7 +13,7 @@ const CarLists = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const carContext = useContext(CarsListContext);
-  const carsInit = carContext ? carContext.cars : [];
+  const carsInit: CarProps[] = useMemo(() => (carContext ? carContext.cars : []), [carContext]);
   const refresh = carContext ? carContext.fetchCarList : () => {};
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const CarLists = () => {
       setNotificationColor(location.state.notificationColor);
       navigate(location.pathname, { replace: true });
     }
-  }, [location.state]);
+  }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
     if (notificationMessage) {
@@ -44,19 +44,21 @@ const CarLists = () => {
   };
 
   const filterSmall = () => {
-    const smallCars = carsInit.filter((car) => car.capacity < 4);
+    const smallCars = carsInit.filter((car) => parseInt(car.capacity) < 4);
     setCars(smallCars);
     setActiveFilter('small');
   };
 
   const filterMedium = () => {
-    const mediumCars = carsInit.filter((car) => car.capacity >= 4 && car.capacity < 6);
+    const mediumCars = carsInit.filter(
+      (car) => parseInt(car.capacity) >= 4 && parseInt(car.capacity) < 6
+    );
     setCars(mediumCars);
     setActiveFilter('medium');
   };
 
   const filterLarge = () => {
-    const largeCars = carsInit.filter((car) => car.capacity >= 6);
+    const largeCars = carsInit.filter((car) => parseInt(car.capacity) >= 6);
     setCars(largeCars);
     setActiveFilter('large');
   };

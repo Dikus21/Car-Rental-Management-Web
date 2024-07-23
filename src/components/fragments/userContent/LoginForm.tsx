@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ILoginData } from './userTypes';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../../hooks/useAuth';
@@ -25,7 +25,7 @@ const LoginForm = () => {
     } else if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAdmin, isAuthenticated]);
+  }, [isAdmin, isAuthenticated, navigate]);
 
   const onSubmit = (data: ILoginData) => {
     loginUser(data).then((message) => {

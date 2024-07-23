@@ -15,10 +15,13 @@ const CarDeleteModal: FC<CarDeleteModalProps> = ({
     if (e.target === e.currentTarget) {
       setShowDeleteModal(false);
     }
-  }
+  };
   return (
     showDeleteModal && (
-      <div className="modal d-flex justify-content-center align-items-center" id="carDeleteModal" onClick={handleClickOutside}>
+      <div
+        className="modal d-flex justify-content-center align-items-center"
+        id="carDeleteModal"
+        onClick={handleClickOutside}>
         <div className="modal-content-delete">
           <img src="/assets/images/img-BeepBeep.png" width="153" height="121" />
           <p>

@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CarAddDto, CarFormProps } from './carListCard/carTypes';
 import { Controller, useForm } from 'react-hook-form';
 import { FileRejection, useDropzone } from 'react-dropzone';
 import { addCar } from '../../../services/car/car.services';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { handleKeyNumberOnly } from '../../../utils/function';
 
 export default function CarAdd() {
   const {
@@ -15,36 +16,49 @@ export default function CarAdd() {
     setError,
     clearErrors
   } = useForm<CarFormProps>({
-    resolver: yupResolver(CarAddDto)
+    resolver: yupResolver(CarAddDto),
+    defaultValues: {
+      model: '',
+      manufacture: '',
+      year: '',
+      rentPerDay: '',
+      capacity: '',
+      transmission: '',
+      withDriver: '',
+      description: ''
+    }
   });
   const navigate = useNavigate();
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    console.log(acceptedFiles);
-    const acceptedFile = acceptedFiles[0];
-    console.log(acceptedFile);
-    const rejectedFile = rejectedFiles[0];
-    let rejectedMessage: string;
-    console.log(rejectedFile);
-    if (rejectedFile) {
-      if (rejectedFile.errors[0].code === 'file-too-large') {
-        rejectedMessage = 'File too Large, Max file size is 1.5MB';
-      } else if (rejectedFile.errors[0].code === 'file-invalid-type') {
-        rejectedMessage = 'Only images are allowed';
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      console.log(acceptedFiles);
+      const acceptedFile = acceptedFiles[0];
+      console.log(acceptedFile);
+      const rejectedFile = rejectedFiles[0];
+      let rejectedMessage: string;
+      console.log(rejectedFile);
+      if (rejectedFile) {
+        if (rejectedFile.errors[0].code === 'file-too-large') {
+          rejectedMessage = 'File too Large, Max file size is 1.5MB';
+        } else if (rejectedFile.errors[0].code === 'file-invalid-type') {
+          rejectedMessage = 'Only images are allowed';
+        } else {
+          rejectedMessage = 'File rejected for unknown reason';
+        }
+        setPreview('');
+        setFile(null);
+        setError('image', { message: rejectedMessage });
       } else {
-        rejectedMessage = 'File rejected for unknown reason';
+        setFile(acceptedFile);
+        setPreview(URL.createObjectURL(acceptedFile));
+        clearErrors('image');
       }
-      setPreview('');
-      setFile(null);
-      setError('image', { message: rejectedMessage });
-    } else {
-      setFile(acceptedFile);
-      setPreview(URL.createObjectURL(acceptedFile));
-      clearErrors('image');
-    }
-  }, []);
+    },
+    [clearErrors, setError]
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: { 'image/*': [] },
@@ -52,20 +66,34 @@ export default function CarAdd() {
     maxSize: 1.5 * 1024 * 1024
   });
 
-  function onSubmit(data: CarFormProps) {
-    console.log(data);
+  const onSubmit = async (data: CarFormProps) => {
+    console.log('data', data);
     const formData = new FormData();
+    if (file) {
+      formData.append('image', file);
+    } else {
+      setError('image', { message: 'Image is required' });
+      return;
+    }
     formData.append('model', data.model);
     formData.append('manufacture', data.manufacture);
     formData.append('year', data.year);
-    formData.append('rentPerDay', data.rentPerDay.toString());
-    formData.append('capacity', data.capacity.toString());
+    formData.append('rentPerDay', data.rentPerDay);
+    formData.append('capacity', data.capacity);
     formData.append('transmission', data.transmission);
     formData.append('withDriver', data.withDriver);
     formData.append('description', data.description ?? '');
-    if (file) {
-      formData.append('image', file);
-    }
+
+    console.log('formData', {
+      model: data.model,
+      manufacture: data.manufacture,
+      year: data.year,
+      rentPerDay: data.rentPerDay,
+      capacity: data.capacity,
+      transmission: data.transmission,
+      withDriver: data.withDriver,
+      description: data.description ?? ''
+    });
 
     addCar(formData).then((response) => {
       if (response && response.success) {
@@ -75,7 +103,7 @@ export default function CarAdd() {
         });
       }
     });
-  }
+  };
 
   return (
     <>
@@ -146,6 +174,16 @@ export default function CarAdd() {
                     id="year"
                     {...field}
                     placeholder="Year"
+                    onKeyDown={(e) => {
+                      handleKeyNumberOnly(e);
+                      if (
+                        e.currentTarget.value.length > 3 &&
+                        e.key !== 'Backspace' &&
+                        e.key !== 'Delete'
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
                   />
                   {errors.year && <span className="text-danger">{errors.year.message}</span>}
                 </div>
@@ -164,11 +202,13 @@ export default function CarAdd() {
                 </div>
                 <div className="col">
                   <input
-                    type="number"
+                    type="text"
                     className={`form-control ${errors.capacity && 'border-danger'}`}
                     id="capacity"
                     {...field}
                     placeholder="Capacity"
+                    min={0}
+                    onKeyDown={handleKeyNumberOnly}
                   />
                   {errors.capacity && (
                     <span className="text-danger">{errors.capacity.message}</span>
@@ -252,6 +292,7 @@ export default function CarAdd() {
                     id="rentPerDay"
                     {...field}
                     placeholder="Rent Per Day"
+                    onKeyDown={handleKeyNumberOnly}
                   />
                   {errors.rentPerDay && (
                     <span className="text-danger">{errors.rentPerDay.message}</span>
@@ -314,10 +355,7 @@ export default function CarAdd() {
                         }}
                       />
                     ) : (
-                      <p
-                        className={`fs-4 ${
-                          errors.image ? 'text-danger' : 'text-black'
-                        }`}>
+                      <p className={`fs-4 ${errors.image ? 'text-danger' : 'text-black'}`}>
                         Drag & drop files here, or click to select files
                       </p>
                     )}

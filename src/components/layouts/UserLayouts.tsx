@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import {Outlet, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { HashLink } from 'react-router-hash-link';
 
@@ -12,7 +12,7 @@ const UserLayouts = () => {
     } else if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAdmin, isAuthenticated]);
+  }, [isAdmin, isAuthenticated, navigate]);
 
   const onLogout = async () => {
     await logoutUser().then((res) => {

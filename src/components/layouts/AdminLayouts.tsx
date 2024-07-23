@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import feather from 'feather-icons';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';

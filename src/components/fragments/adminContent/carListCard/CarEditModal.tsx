@@ -34,25 +34,28 @@ const CarEditModal: FC<CarEditModalProps> = ({
   const [startDate, setStartDate] = useState<string>();
 
   // doropzone image configuration
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    const acceptedFile = acceptedFiles[0];
-    const rejectedFile = rejectedFiles[0];
-    let rejectedMessage: string;
-    if (rejectedFile) {
-      if (rejectedFile.errors[0].code === 'file-too-large') {
-        rejectedMessage = 'File too Large, Max file size is 1.5MB';
-      } else if (rejectedFile.errors[0].code === 'file-invalid-type') {
-        rejectedMessage = 'Only images are allowed';
+  const onDrop = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      const acceptedFile = acceptedFiles[0];
+      const rejectedFile = rejectedFiles[0];
+      let rejectedMessage: string;
+      if (rejectedFile) {
+        if (rejectedFile.errors[0].code === 'file-too-large') {
+          rejectedMessage = 'File too Large, Max file size is 1.5MB';
+        } else if (rejectedFile.errors[0].code === 'file-invalid-type') {
+          rejectedMessage = 'Only images are allowed';
+        } else {
+          rejectedMessage = 'File rejected for unknown reason';
+        }
+        setError('image', { message: rejectedMessage });
       } else {
-        rejectedMessage = 'File rejected for unknown reason';
+        setFile(acceptedFile);
+        setPreview(URL.createObjectURL(acceptedFile));
+        clearErrors('image');
       }
-      setError('image', { message: rejectedMessage });
-    } else {
-      setFile(acceptedFile);
-      setPreview(URL.createObjectURL(acceptedFile));
-      clearErrors('image');
-    }
-  }, []);
+    },
+    [clearErrors, setError]
+  );
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxSize: 1.5 * 1024 * 1024,

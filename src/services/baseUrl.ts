@@ -3,9 +3,10 @@ import { refreshToken } from './user/auth.services';
 
 // let hasTriedRefreshToken = false;
 const ignorePaths = ['/refresh-token', '/user/logout'];
+console.log('API URL: ', import.meta.env.VITE_API_URL);
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true
 });
 
@@ -16,20 +17,19 @@ axiosInstance.interceptors.response.use(
     console.log('Error: ', originalRequest);
 
     // Check if we should refresh the token
-    if (error.response.status === 401 && !ignorePaths.includes(originalRequest.url)){
+    if (error.response.status === 401 && !ignorePaths.includes(originalRequest.url)) {
       console.log('Refreshing token...');
 
       try {
-        await refreshToken().then(({success}) => {
-            if (success) {
-                return axiosInstance(originalRequest) // Retry the original request with the new token
-            }
+        await refreshToken().then(({ success }) => {
+          if (success) {
+            return axiosInstance(originalRequest); // Retry the original request with the new token
+          }
         }); // Refresh the token
       } catch (refreshError) {
         return Promise.reject(refreshError); // If token refresh fails, reject the promise
       }
     }
-
 
     // For other response statuses or if retrying does not work, reject the promise
     return Promise.reject(error);

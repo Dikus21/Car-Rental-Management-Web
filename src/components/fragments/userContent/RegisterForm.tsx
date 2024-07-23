@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IRegisterData } from './userTypes';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../../hooks/useAuth';
@@ -26,7 +26,7 @@ const RegisterForm = () => {
     } else if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAdmin, isAuthenticated]);
+  }, [isAdmin, isAuthenticated, navigate]);
 
   const onSubmit = (data: IRegisterData) => {
     registerUser(data).then((message) => {

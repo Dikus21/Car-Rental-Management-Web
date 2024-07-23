@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Calendar, Settings, User } from 'react-feather';
 import { CarProps } from '../../adminContent/carListCard/carTypes';
 import { useNavigate } from 'react-router-dom';

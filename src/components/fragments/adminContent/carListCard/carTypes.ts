@@ -5,14 +5,12 @@ export const CarAddDto = Yup.object({
   model: Yup.string().required('Model is required'),
   manufacture: Yup.string().required('Manufacture is required'),
   year: Yup.string().required('Year is required'),
-  rentPerDay: Yup.number().required('Price is required'),
-  capacity: Yup.number().required('Capacity is required'),
+  rentPerDay: Yup.string().required('Price is required'),
+  capacity: Yup.string().required('Capacity is required'),
   transmission: Yup.string().required('Transmission is required'),
-  withDriver: Yup.string()
-    .oneOf(['true', 'false'], 'Invalid Selection')
-    .required('With driver is required'),
+  withDriver: Yup.string().required('With Driver is required'),
   description: Yup.string(),
-  image: Yup.string().required('Image is required')
+  image: Yup.string()
 });
 
 export type CarFormProps = Yup.InferType<typeof CarAddDto>;
