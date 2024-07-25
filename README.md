@@ -2,6 +2,8 @@
 
 This repository contains the front-end code for the Car Management application. It is built using Vite and React with TypeScript. The website provides information about the company, its motto, and user reviews, as well as a list of cars available for rent. There is also an admin feature that allows administrators to monitor and manage the car inventory.
 
+Deployed website: https://fsw-challenge-7-react.vercel.app/
+
 ## Tech Stack
 
 - **Frontend Framework**: React
@@ -68,5 +70,23 @@ yarn dev
 npm run dev
 ```
 
-## Deployment
-The project is deployed and can be accessed at https://fsw-challenge-7-react.vercel.app/
+## Testing Account
+
+### USER *(Normal user)*
+
+**Email**: user@mail.com
+
+**Password**: 12345
+
+### ADMIN *(Can access admin auth website)*
+
+**Email**: admin@mail.com
+
+**Password**: 12345
+
+### SUPER ADMIN *(Have all admin ability and can create ADMIN auth account)*
+
+**Email**: super@mail.com
+
+**Password**: 12345
+
