@@ -58,7 +58,7 @@ const CarCard: FC<CarCardProps> = ({
     <div>
       <div className="car-filter-card card mx-3 my-3">
         <img
-          src={car.image ? car.imageUrl : '/assets/images/noImage.jpg'}
+          src={car.imagePublicId ? car.imageURL : '/assets/images/noImage.jpg'}
           alt="Car"
           className="car-filter-img img-fluid"
         />

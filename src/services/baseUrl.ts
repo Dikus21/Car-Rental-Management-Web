@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { refreshToken } from './user/auth.services';
+import store from '../redux/store';
+import { resetAuthUser } from '../redux/authSlice';
 
 // let hasTriedRefreshToken = false;
 const ignorePaths = ['/refresh-token', '/user/logout'];
@@ -9,22 +11,35 @@ const axiosInstance = axios.create({
   withCredentials: true
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (accessToken) {
+    config.headers["Authorization"] = `Bearer ${accessToken}`;
+  }
+  console.log("ORIGINAL REQUEST: ", config);
+  return config;
+});
+
 axiosInstance.interceptors.response.use(
   (response) => response, // Simply return the response if everything is fine
   async (error) => {
     const originalRequest = error.config;
-    console.log('Error: ', originalRequest);
 
     // Check if we should refresh the token
     if (error.response.status === 401 && !ignorePaths.includes(originalRequest.url)) {
       console.log('Refreshing token...');
 
       try {
-        await refreshToken().then(({ success }) => {
-          if (success) {
-            return axiosInstance(originalRequest); // Retry the original request with the new token
+        const { success, message }= await refreshToken();
+
+        console.log("Refresh Token M: ", message)
+
+        if (success) {
+            return await axiosInstance(originalRequest); // Retry the original request with the new token
+          } else {
+            store.dispatch(resetAuthUser());
+            localStorage.removeItem('accessToken');
           }
-        }); // Refresh the token
       } catch (refreshError) {
         return Promise.reject(refreshError); // If token refresh fails, reject the promise
       }

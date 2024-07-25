@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import feather from 'feather-icons';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { NavLink } from 'react-router-dom';
 import BreadCrumbs from '../fragments/adminContent/BreadCrumbs';
@@ -10,9 +10,18 @@ import { Link } from 'react-router-dom';
 
 const AdminLayouts = () => {
   console.log('Admin Layouts');
+  const { user, logoutUser, isAdmin, isInitialize } = useAuth();
   const [cars, setCars] = useState<CarProps[]>([]);
-  const { user, logoutUser } = useAuth();
-  const [isRefresh, setRefresh] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isInitialize) {
+      if (!isAdmin) {
+        navigate('/#main');
+      } else fetchCarList();
+    }
+    feather.replace();
+  }, [isInitialize]);
 
   const fetchCarList = async () => {
     console.log('getCarList');
@@ -20,34 +29,25 @@ const AdminLayouts = () => {
       .then(({ success, data }) => {
         if (success) {
           console.log('getCarList success');
-          setRefresh(false);
           setCars(data);
         }
       })
       .catch((err) => {
-        setRefresh(false);
         if (err.name === 'AbortError') {
           console.log('fetch aborted.');
         }
       });
   };
 
-  useEffect(() => {
-    if (isRefresh) {
-      fetchCarList();
-    }
-  }, [isRefresh, setRefresh]);
-
-  useEffect(() => {
-    feather.replace();
-  }),
-    [];
-
   const onLogout = async () => {
     await logoutUser().then((res) => {
       console.log(res);
     });
   };
+
+  // if (isInitialize) {
+  //   return <div className="d-flex justify-content-center align-items-center h-screen">Loading....</div>;
+  // }
   return (
     <div className="container-fluid g-container">
       <aside className="sidebar d-flex justify-content-center vh-100">
@@ -103,9 +103,7 @@ const AdminLayouts = () => {
                   placeholder="Search"
                   aria-label="Search"
                 />
-                <button className="btn btn-outline-success navbar-search-button">
-                  Search
-                </button>
+                <button className="btn btn-outline-success navbar-search-button">Search</button>
               </form>
               <div className="dropdown">
                 <button

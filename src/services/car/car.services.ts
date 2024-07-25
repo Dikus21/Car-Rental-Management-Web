@@ -6,6 +6,7 @@ export const getCarList = async () => {
   try {
     const response = await axiosInstance.get('/car/list');
     if (response.status === 200) {
+      console.log("SUCCESS GET CAR LIST")
       return { success: true, data: response.data };
     }
     return { success: false, message: response.data.error };

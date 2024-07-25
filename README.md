@@ -78,7 +78,7 @@ npm run dev
 
 **Password**: 12345
 
-### ADMIN *(Can access admin auth website)*
+### ADMIN *(Can access admin auth feature)*
 
 **Email**: admin@mail.com
 

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { HashLink } from 'react-router-hash-link';
 
 const UserLayouts = () => {
   const navigate = useNavigate();
@@ -24,13 +23,13 @@ const UserLayouts = () => {
     <div>
       <nav className="navbar navbar-expand-md navbar-main pt-navbar px-14 fixed-top">
         <div className="container-fluid">
-          <HashLink className="navbar-brand" to="/#main">
+          <a className="navbar-brand" href="/#main">
             <img
               src="/assets/images/logo.png"
               alt="logo"
               className="logo d-inline-block align-text-top"
             />
-          </HashLink>
+          </a>
           <button
             className="navbar-toggler"
             type="button"
@@ -61,24 +60,24 @@ const UserLayouts = () => {
             <div className="offcanvas-body">
               <ul className="navbar-nav ms-auto gap-2 d-flex align-items-center">
                 <li className="nav-item">
-                  <HashLink className="nav-link active text-r-14" to="/#our-services">
+                  <a className="nav-link active text-r-14" href="/#our-services">
                     Our Services
-                  </HashLink>
+                  </a>
                 </li>
                 <li className="nav-item">
-                  <HashLink className="nav-link active text-r-14" to="/#why-us">
+                  <a className="nav-link active text-r-14" href="/#why-us">
                     Why Us
-                  </HashLink>
+                  </a>
                 </li>
                 <li className="nav-item">
-                  <HashLink className="nav-link active text-r-14" to="/#testimonial">
+                  <a className="nav-link active text-r-14" href="/#testimonial">
                     Testimonial
-                  </HashLink>
+                  </a>
                 </li>
                 <li className="nav-item">
-                  <HashLink className="nav-link active text-r-14" to="/#faq">
+                  <a className="nav-link active text-r-14" href="/#faq">
                     FAQ
-                  </HashLink>
+                  </a>
                 </li>
                 <li className="nav-item d-flex gap-4">
                   {isAuthenticated ? (

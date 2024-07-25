@@ -24,7 +24,7 @@ const CarSearchCard: FC<CarCardProps> = ({ car }) => {
     <div className="col-12 col-sm-6 col-md-4 col-lg-3 col-xxl-2 d-flex justify-content-center">
       <div className="car-filter-card card mx-3 my-3">
         <img
-          src={car.image ? car.imageUrl : '/assets/images/noImage.jpg'}
+          src={car.imagePublicId ? car.imageURL : '/assets/images/noImage.jpg'}
           alt="Car"
           className="car-filter-img img-fluid"
         />

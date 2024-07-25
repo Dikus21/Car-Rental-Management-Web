@@ -17,7 +17,8 @@ export type CarFormProps = Yup.InferType<typeof CarAddDto>;
 
 export interface CarProps extends CarFormProps {
   id: number;
-  imageUrl: string;
+  imageURL: string;
+  imagePublicId: string;
   startRent?: string;
   endRent?: string;
   finishRent?: Date;
@@ -26,6 +27,7 @@ export interface CarProps extends CarFormProps {
   deletedAt?: Date;
 }
 
-export const CarsListContext = createContext<{ cars: CarProps[]; fetchCarList: (refresh: boolean) => void } | null>(
-  null
-);
+export const CarsListContext = createContext<{
+  cars: CarProps[];
+  fetchCarList: (refresh: boolean) => void;
+} | null>(null);

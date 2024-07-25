@@ -5,6 +5,7 @@ import CarCard from './CarCard';
 import { CarProps, CarsListContext } from './carTypes';
 
 const CarLists = () => {
+  console.log("CAR LIST");
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationColor, setNotificationColor] = useState('');
   const [cars, setCars] = useState<CarProps[]>([]);

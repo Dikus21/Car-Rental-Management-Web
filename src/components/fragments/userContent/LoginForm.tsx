@@ -7,7 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 const LoginForm = () => {
   const { loginUser, isAdmin, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -25,11 +26,12 @@ const LoginForm = () => {
     } else if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAdmin, isAuthenticated, navigate]);
+  }, [isAdmin, isAuthenticated]);
 
   const onSubmit = (data: ILoginData) => {
-    loginUser(data).then((message) => {
-      setErrorMessage(message);
+    loginUser(data).then(({ success, message }) => {
+      setMessage(message);
+      setIsSuccess(success);
     });
   };
   return (
@@ -81,10 +83,16 @@ const LoginForm = () => {
         <span>Don&apos;t have an account? </span>
         <Link to="/register">Register</Link>
       </div>
-      {errorMessage && (
-        <div className="alert alert-danger mt-3 text-center" role="alert">
-          {errorMessage}
+      {message && (
+        isSuccess ? (
+        <div className="alert alert-success mt-3 text-center" role="alert">
+          Login Successful
         </div>
+      ) : (
+        <div className="alert alert-danger mt-3 text-center" role="alert">
+          {message}
+        </div>
+      )
       )}
     </>
   );

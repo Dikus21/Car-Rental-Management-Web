@@ -30,7 +30,7 @@ const CarEditModal: FC<CarEditModalProps> = ({
   });
 
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>(updateCar.imageUrl);
+  const [preview, setPreview] = useState<string>(updateCar.imageURL);
   const [startDate, setStartDate] = useState<string>();
 
   // doropzone image configuration

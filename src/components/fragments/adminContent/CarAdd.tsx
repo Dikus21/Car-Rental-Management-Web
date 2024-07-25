@@ -176,11 +176,7 @@ export default function CarAdd() {
                     placeholder="Year"
                     onKeyDown={(e) => {
                       handleKeyNumberOnly(e);
-                      if (
-                        e.currentTarget.value.length > 3 &&
-                        e.key !== 'Backspace' &&
-                        e.key !== 'Delete'
-                      ) {
+                      if (e.currentTarget.value.length > 3) {
                         e.preventDefault();
                       }
                     }}
