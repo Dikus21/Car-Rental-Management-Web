@@ -58,8 +58,8 @@ const CarSearch = () => {
                 Sewa &amp; Rental Mobil Terbaik di kawasan &#40;Lokasimu&#41;
               </p>
               <p className="text-l-14">
-                Selamat datang di Binar Car Rental. Kami menyediakan mobil kualitas terbaik dengan
-                harga terjangkau. Selalu siap melayani kebutuhanmu untuk sewa mobil selama 24 jam.
+                Selamat datang di KeyGO Rental. Kami menyediakan mobil kualitas terbaik dengan harga
+                terjangkau. Selalu siap melayani kebutuhanmu untuk sewa mobil selama 24 jam.
               </p>
             </div>
             <div className="col-12 col-md-6 main-img-container">

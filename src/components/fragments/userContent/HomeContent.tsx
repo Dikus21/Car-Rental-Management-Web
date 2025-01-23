@@ -31,8 +31,8 @@ const HomeContent = () => {
                 Sewa &amp; Rental Mobil Terbaik di kawasan &#40;Lokasimu&#41;
               </p>
               <p className="text-l-14">
-                Selamat datang di Binar Car Rental. Kami menyediakan mobil kualitas terbaik dengan
-                harga terjangkau. Selalu siap melayani kebutuhanmu untuk sewa mobil selama 24 jam.
+                Selamat datang di KeyGO Rental. Kami menyediakan mobil kualitas terbaik dengan harga
+                terjangkau. Selalu siap melayani kebutuhanmu untuk sewa mobil selama 24 jam.
               </p>
               <Link to="/cars">
                 <button type="button" className="btn btn-register text-b-14">
@@ -67,9 +67,9 @@ const HomeContent = () => {
                 Best Car Rental for any kind of trip in &#40;Lokasimu&#41;!
               </p>
               <p className="text-l-14">
-                Sewa mobil di (Lokasimu) bersama Binar Car Rental jaminan harga lebih murah
-                dibandingkan yang lain, kondisi mobil baru, serta kualitas pelayanan terbaik untuk
-                perjalanan wisata, bisnis, wedding, meeting, dll.
+                Sewa mobil di (Lokasimu) bersama KeyGO Rental jaminan harga lebih murah dibandingkan
+                yang lain, kondisi mobil baru, serta kualitas pelayanan terbaik untuk perjalanan
+                wisata, bisnis, wedding, meeting, dll.
               </p>
               <ul className="custom-list text-l-14">
                 <p data-aos="fade-up">
@@ -107,7 +107,7 @@ const HomeContent = () => {
           </div>
           <div className="row">
             <div className="col">
-              <p className="text-l-14">Mengapa harus pilih Binar Car Rental?</p>
+              <p className="text-l-14">Mengapa harus pilih KeyGO Rental?</p>
             </div>
           </div>
           <div className="row">

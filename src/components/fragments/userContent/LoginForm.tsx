@@ -26,7 +26,7 @@ const LoginForm = () => {
     } else if (isAuthenticated) {
       navigate('/');
     }
-  }, [isAdmin, isAuthenticated]);
+  }, [isAdmin, isAuthenticated, navigate]);
 
   const onSubmit = (data: ILoginData) => {
     loginUser(data).then(({ success, message }) => {
