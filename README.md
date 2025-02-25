@@ -90,5 +90,3 @@ npm run dev
 
 **Password**: 12345
 
-:)
-
